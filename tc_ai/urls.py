@@ -16,7 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from .views import PropertyList, PropertyDetail, DocumentUploadView, DocumentListCategoryView, DocumentDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', PropertyList.as_view()),
+    path('property/', PropertyList.as_view(), name='property-list'),
+    path('property/<int:pk>/', PropertyDetail.as_view(), name='property-detail'),
+    path('property/<int:property_id>/docs/', DocumentUploadView.as_view(), name='document-upload'),
+    path('property/<int:property_id>/docs/<category>/', DocumentListCategoryView.as_view(), name='document-list-category'),
+    path('property/<int:property_id>/docs/<category>/<int:pk>/', DocumentDetailView.as_view(), name='document-detail'),
 ]
