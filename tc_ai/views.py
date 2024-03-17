@@ -33,9 +33,8 @@ class DocumentUploadView(APIView):
         if uploaded_file:
             # Optionally, save the file to your media root
             file_path = default_storage.save('uploads/' + uploaded_file.name, ContentFile(uploaded_file.read()))
-            from pdfminer.high_level import extract_text
-            text = extract_text(file_path)
-            return Response({'message': f'File uploaded successfully at {file_path}.', 'content_preview': text[:100]}, status=status.HTTP_201_CREATED)
+
+            return Response({'message': f'File uploaded successfully at {file_path}.'}, status=status.HTTP_201_CREATED)
         else:
             return Response({'error': f'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
         
