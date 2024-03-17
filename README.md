@@ -5,7 +5,7 @@ Run the following commands to run the server. Assuming you already have python 3
 
 ```
 pip install -r requirements.txt
-
+python manage.py migrate
 python manage.py runserver
 
 ```
