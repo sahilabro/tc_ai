@@ -20,7 +20,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv())
-from tc_ai.extract import actions_and_compliance
+from tc_ai.extract import actions_and_compliance, extract_categories_and_questions
 
 # get secrets
 openai.api_key = os.environ['OPENAI_API_KEY']
@@ -98,7 +98,10 @@ class DocumentUploadView(APIView):
             # Get similar documents using rag
             doc_text, match_text = self.get_matched_docs_from_pdfs("documents", 10, file_path)
 
-            category_text = ''
+            category, category_text = extract_categories_and_questions(doc_text).items()
+            if category == 'Purchase Agreement - PA':
+                #extract_dates
+                pass
             actions_and_compliance(doc_text, category_text, match_text, property_id)
 
             return Response({'message': 'File upload initiated. Dates will be extracted and stored.'}, status=status.HTTP_202_ACCEPTED)
