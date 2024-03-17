@@ -33,8 +33,8 @@ export const Evaluation = () => {
         console.log('target',target);
         if (
           target[0] &&
-          target[0]["results_json"] !== "undefined" &&
-          target[0]["extracted_dates"] !== undefined
+          target[0]["results_json"] !== undefined &&  target[0]["results_json"]  !== null && 
+          target[0]["extracted_dates"] !== undefined && target[0]["results_json"]  !== null 
         ) {
           console.log("got some data", target[0]);
           setPropertyData(target[0]["results_json"]);
