@@ -10,6 +10,26 @@ from django.core.files.base import ContentFile
 from tc_ai.extract import extract_dates_with_gpt as get_dates
 import json
 
+# Liam Imports
+import os
+import openai
+from supabase.client import Client, create_client
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import SupabaseVectorStore
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.document_loaders import PyPDFLoader
+from dotenv import load_dotenv, find_dotenv
+_ = load_dotenv(find_dotenv())
+from tc_ai.extract import actions_and_compliance
+
+# get secrets
+openai.api_key = os.environ['OPENAI_API_KEY']
+supabase_url = os.environ['SUPABASE_URL']
+supabase_key = os.environ['SUPABASE_KEY']
+
+# set up supabase client
+supabase: Client = create_client(supabase_url, supabase_key)
+
 #import serializers
 
 class PropertyList(generics.ListCreateAPIView):
@@ -75,13 +95,52 @@ class DocumentUploadView(APIView):
             # Get property_id from the request
             property_id = self.kwargs.get('property_id')  # Ensure you send property_id in your request
             
-            # Start a new thread for date extraction and updating the property
-            threading.Thread(target=extract_dates_and_update_property, args=(file_path, property_id)).start()
-            
+            # Get similar documents using rag
+            doc_text, match_text = self.get_matched_docs_from_pdfs("documents", 10, file_path)
+
+            category_text = ''
+            actions_and_compliance(doc_text, category_text, match_text, property_id)
+
             return Response({'message': 'File upload initiated. Dates will be extracted and stored.'}, status=status.HTTP_202_ACCEPTED)
         else:
             return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
         
+    def get_matched_docs_from_pdfs(self, table, num_docs, file_path):
+        """
+        Retrieves documents from the specified table that match the uploaded files,
+        performing a similarity search for each file individually.
+        """
+
+        # setup
+        embeddings = OpenAIEmbeddings()
+        vector_store = SupabaseVectorStore(
+            client=supabase,
+            embedding=embeddings,
+            table_name=table,
+            query_name="match_documents",
+        )
+
+        # Get vectors embeddings of all docs in the uploads directory
+        directory = "uploads/"
+
+        print(f'processing {file_path}')
+        # load pages from file
+        loader = PyPDFLoader(file_path)
+        documents = loader.load()
+
+        # get all text from documents
+        doc_text = ''
+        for doc in documents:
+            doc_text+=doc.page_content
+
+        matched_docs = vector_store.similarity_search(doc_text, k=num_docs)
+
+        # join all matched docs into a string
+        match_text = ''
+        for doc in matched_docs:
+            match_text+=doc.page_content
+
+        return doc_text, match_text
 
 class DocumentListCategoryView(generics.ListAPIView):
     serializer_class = DocumentSerializer
