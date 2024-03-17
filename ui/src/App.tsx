@@ -33,7 +33,7 @@ function App() {
           navigate("/upload?propertyTitle="+propertyTitle)
         }
         }/>} />
-        <Route path="/upload" element={<Upload propertyTitle={title} goNext={() => { navigate('/evaluate') }} />} />
+        <Route path="/upload" element={<Upload propertyTitle={title} goNext={(propertyTitle: string) => { navigate('/evaluate?propertyTitle='+propertyTitle) }} />} />
         <Route path="/evaluate" element={<Evaluation />} />
 
 

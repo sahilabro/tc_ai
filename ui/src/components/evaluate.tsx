@@ -1,18 +1,24 @@
+import { useSearchParams } from "react-router-dom";
 import { BarTreeView } from "./bar-tree";
-import { Timeline, TimelineDataEntry , stubData as TimelineStubbedData} from "./timeline";
+import {
+  Timeline,
+  TimelineDataEntry,
+  stubData as TimelineStubbedData,
+} from "./timeline";
 import React, { useState, useEffect } from "react";
 import LinearBuffer from "./spinner";
 import { stubData as BarStubbedData, BarTreeViewDataEntry } from "./bar-tree";
 
-
 export const Evaluation = () => {
   const [propertyData, setPropertyData] = useState<BarTreeViewDataEntry[]>([]);
   const [timelineData, setTimelineData] = useState<TimelineDataEntry[]>([]);
-//   const [attempts, setAttempts] = useState(0);
+  //   const [attempts, setAttempts] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const propTitle = searchParams.get("propertyTitle");
 
-    // console.log(attempts)
-    useEffect(() => {
-        let attempts = 0;
+  // console.log(attempts)
+  useEffect(() => {
+    let attempts = 0;
     const fetchData = async () => {
       try {
         console.log("getting data from eval...");
@@ -21,25 +27,32 @@ export const Evaluation = () => {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        if (data && data["results_json"] !== "undefined" && data["extracted_dates"] !== undefined) {
-          console.log("got some data", data);
-          setPropertyData(data["results_json"]);
-          setTimelineData(data["extracted_dates"]);
-          
+        const target = data.filter(
+          (d: { title: string }) => d.title === propTitle
+        );
+        console.log('target',target);
+        if (
+          target[0] &&
+          target[0]["results_json"] !== "undefined" &&
+          target[0]["extracted_dates"] !== undefined
+        ) {
+          console.log("got some data", target[0]);
+          setPropertyData(target[0]["results_json"]);
+          setTimelineData(target[0]["extracted_dates"]);
         } else if (attempts === -1) {
-            setPropertyData(BarStubbedData);
-            setTimelineData(TimelineStubbedData);
+          setPropertyData(BarStubbedData);
+          setTimelineData(TimelineStubbedData);
           return;
         } else {
-            // If enough no datas (results_json, extracted not there, do render stubb)
-            console.error("no data");
-            console.log(attempts)
+          // If enough no datas (results_json, extracted not there, do render stubb)
+          console.error("no data");
+          console.log(attempts);
           if (attempts > 2) {
-              attempts = -1;
-              return;
+            attempts = -1;
+            return;
           }
-            //   setAttempts(attempts => attempts + 1);
-            attempts += 1;
+          //   setAttempts(attempts => attempts + 1);
+          attempts += 1;
         }
       } catch (error) {
         console.error("Error fetching data:", error);

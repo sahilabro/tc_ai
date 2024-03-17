@@ -74,7 +74,7 @@ const navigate = useNavigate();
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            Property Pal 🤝
+             AI TC
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block'} }}>
             {navItems.map((item) => (

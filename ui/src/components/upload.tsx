@@ -9,9 +9,9 @@ import { useSearchParams } from "react-router-dom";
 
 async function uploadFiles(propertyTitle: string, files: FileList) {
 
-  if (!propertyTitle) {
-    propertyTitle = "123"
-  }
+  // if (!propertyTitle) {
+  //   propertyTitle = "123"
+  // }
 
   const filesUpload = []
 
@@ -31,6 +31,7 @@ async function uploadFiles(propertyTitle: string, files: FileList) {
     try {
       const uploaded = await Promise.all(filesUpload);
       console.log("uploaded files", uploaded);
+      console.log(uploaded[0])
     } catch (e) {
       console.error(e);
     }
@@ -49,9 +50,9 @@ function Dropzone(props: DropzoneProps) {
     // Do something with the files
     try {
       setUploading(true);
-      await Promise.all([uploadFiles(props.propertyTitle, acceptedFiles), new Promise((r) => setTimeout(r, 1000 * 3))]);
-
-      props.goNext();
+      const res =  await Promise.all([uploadFiles(props.propertyTitle, acceptedFiles), new Promise((r) => setTimeout(r, 1000 * 3))]);
+      console.log(res)
+      props.goNext(props.propertyTitle);
     } catch (e) {
       console.error(e);
     }
