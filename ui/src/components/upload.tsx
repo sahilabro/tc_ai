@@ -4,7 +4,7 @@ import { useState } from "react";
 import React, {useCallback} from 'react'
 import { useDropzone } from 'react-dropzone'
 import { getUploadEndpoint } from "../api/endpoint";
-import CircularWithValueLabel from "./spinner";
+import LinearBuffer from "./spinner";
 import { useSearchParams } from "react-router-dom";
 
 async function uploadFiles(propertyTitle: string, files: FileList) {
@@ -49,7 +49,7 @@ function Dropzone(props: DropzoneProps) {
     // Do something with the files
     try {
       setUploading(true);
-      await Promise.all([uploadFiles(props.propertyTitle, acceptedFiles), new Promise((r) => setTimeout(r, 1000 * 7))]);
+      await Promise.all([uploadFiles(props.propertyTitle, acceptedFiles), new Promise((r) => setTimeout(r, 1000 * 3))]);
 
       props.goNext();
     } catch (e) {
@@ -76,7 +76,7 @@ function Dropzone(props: DropzoneProps) {
         }
     </button>
 
-      {uploading && <CircularWithValueLabel  />}
+      {uploading && <LinearBuffer  />}
 
       </Stack>
         )

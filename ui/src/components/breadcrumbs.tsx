@@ -55,7 +55,7 @@ export const CustomizedBreadcrumbs = (props: BreadCrumbContainerProps) => {
     <div role="presentation" style={{marginBlockEnd: "16px"}}>
       <Breadcrumbs aria-label="breadcrumb">
         <BreadCrumbWithActiveState
-                  active={props.curPath === "/form"}
+                  active={props.curPath === "/"}
                   label="Describe"
           icon={ModeEditOutlineIcon}
         />
