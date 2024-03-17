@@ -6,6 +6,7 @@ class Property(models.Model):
     address = models.TextField()
     description = models.TextField(blank=True, null=True)
     extracted_dates = JSONField(null=True, blank=True)
+    results_json = JSONField(null=True, blank=True)
     # Add more fields as necessary
 
     def __str__(self):
