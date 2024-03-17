@@ -69,3 +69,36 @@ def actions_and_compliance(document_text, category_text, knowledge_text, propert
 
     return existing_data
 
+
+
+
+def extract_categories_and_questions(doc_text):
+    import pdfplumber
+    file_path_cats = './categories_questions.pdf' # Update with the actual path
+    reference_document_text = ''
+    # Open the PDF file
+    with pdfplumber.open(file_path_cats) as pdf:
+        for page in pdf.pages:
+            reference_document_text += page.extract_text()
+
+    prompt = f"""
+            Given the reference document below, categorize the user document and extract relevant questions related to its category.
+
+            Reference Document:
+            {reference_document_text}
+
+            User Document:
+            {doc_text}
+
+            Based on the reference document, return a JSON in the format {{'category' : 'X', 'questions' : <str: category and questions>}}
+            Please do not return anything other than JSON, not even backticks. 
+            """
+    
+    response = client.chat.completions.create(
+                model="gpt-4-turbo-preview",
+                messages=[
+                            {"role": "user", "content": prompt},
+                        ]
+                )
+    categories_and_questions = response.choices[0].message.content.strip()
+    return categories_and_questions
