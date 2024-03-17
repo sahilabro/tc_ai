@@ -1,6 +1,16 @@
 from rest_framework import generics
 from .models import Property, Document
 from .serializers import PropertySerializer, DocumentSerializer
+from rest_framework import status
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+
+
+
+#import serializers
 
 class PropertyList(generics.ListCreateAPIView):
     queryset = Property.objects.all()
@@ -10,10 +20,25 @@ class PropertyDetail(generics.RetrieveUpdateAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
 
-class DocumentUploadView(generics.CreateAPIView):
+
+class DocumentUploadView(APIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
-    # You would include logic in the post method to automatically determine the category
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        uploaded_file = request.FILES.get('doc_file')
+        print(request.FILES)
+        
+        if uploaded_file:
+            # Optionally, save the file to your media root
+            file_path = default_storage.save('uploads/' + uploaded_file.name, ContentFile(uploaded_file.read()))
+            from pdfminer.high_level import extract_text
+            text = extract_text(file_path)
+            return Response({'message': f'File uploaded successfully at {file_path}.', 'content_preview': text[:100]}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': f'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class DocumentListCategoryView(generics.ListAPIView):
     serializer_class = DocumentSerializer

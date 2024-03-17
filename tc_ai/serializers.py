@@ -15,3 +15,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
+# class DocumentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Document
+#         fields = '__all__'
+#         # Assuming 'doc_file' is the field in your Document model for the file
