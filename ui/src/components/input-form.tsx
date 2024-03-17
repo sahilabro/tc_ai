@@ -1,12 +1,51 @@
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
+import { outlinedInputClasses } from "@mui/material/OutlinedInput";
+import {
+  createTheme,
+  ThemeProvider,
+  Theme,
+  useTheme,
+} from "@mui/material/styles";
+
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
-import { ENDPOINT } from '../api/endpoint';
+import { ENDPOINT } from "../api/endpoint";
 
 interface GoNext {
   goNext: Function;
 }
+
+const customTheme = (theme: Theme) => {
+  const themeOverrides = {
+    pallete: {
+      primary: {
+        main: "green",
+      },
+      secondary: {
+        main: "red",
+      },
+    },
+    components: {
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            "--TextField-brandBorderColor": "red",
+            "--TextField-brandBorderHoverColor": "red",
+            "--TextField-brandBorderFocusedColor": "red",
+            "& label.Mui-focused": {
+              color: "var(--TextField-brandBorderFocusedColor)",
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const newTheme = createTheme({ ...theme, ...themeOverrides });
+  return newTheme;
+};
+
 export function InputForm(props: GoNext) {
   const [formData, setFormData] = useState({
     title: "",
@@ -42,49 +81,86 @@ export function InputForm(props: GoNext) {
       console.error(e);
     }
   };
-  
-  const dataOk = formData.title !== "" && formData.address !== "" && formData.description !== ""; 
+
+  const dataOk =
+    formData.title !== "" &&
+    formData.address !== "" &&
+    formData.description !== "";
+
+  const theme = useTheme();
+
   return (
     <Box
-    component="form"
-    sx={{
-      '& > :not(style)': { m: 1, width: '25ch' },
-      display: "flex",
-      flexDirection: "column",
-      width: "100vw",
-      // background: "red",
-      alignItems: "center"
-    }}
-    noValidate
-    autoComplete="off"
-  >
+      component="form"
+      sx={{
+        "& > :not(style)": { m: 1, width: "25ch" },
+        display: "flex",
+        flexDirection: "column",
+        width: "100vw",
+        // background: "red",
+        alignItems: "center",
+        marginTop: "32px"
+      }}
+      noValidate
+      autoComplete="off"
+    >
       <TextField
+        sx={{
+          "& .MuiInputLabel-root.Mui-focused": { color: "#66bb6a" },
+          "& .MuiInput-underline:before": { borderBottomColor: "#2b2b2b" },
+          "& .MuiInput-underline:after": { borderBottomColor: "#66bb6a" },
+        }}
         name="title"
-        style = {{width: "50vw"}}
-        fullWidth id="title-text" label="Title" variant="standard"
-        onChange={handleChange} 
+        style={{ width: "50vw" }}
+        fullWidth
+        id="title-text"
+        label="Property Title"
+        variant="standard"
+        onChange={handleChange}
       />
       <TextField
-                name="address"
-
-        style = {{width: "50vw"}}
-        fullWidth id="address-text" label="Address" variant="standard"
-        onChange={handleChange} 
-        />
+        sx={{
+          "& .MuiInputLabel-root.Mui-focused": { color: "#66bb6a" },
+          "& .MuiInput-underline:before": { borderBottomColor: "#2b2b2b" },
+          "& .MuiInput-underline:after": { borderBottomColor: "#66bb6a" },
+        }}
+        name="address"
+        style={{ width: "50vw" }}
+        fullWidth
+        id="address-text"
+        label="Address"
+        variant="standard"
+        onChange={handleChange}
+      />
       <TextField
         fullWidth
         name="description"
-        style = {{width: "50vw"}}
-        sx={{width: "1000px", }}
-            id="description-test"
-            label="Description"
-            multiline
-            maxRows={4}
+        style={{ width: "50vw" }}
+        sx={{
+          "& .MuiInputLabel-root.Mui-focused": { color: "#66bb6a" },
+          "& .MuiInput-underline:before": { borderBottomColor: "#2b2b2b" },
+          "& .MuiInput-underline:after": { borderBottomColor: "#66bb6a" },
+        }}
+        id="description-test"
+        label="Description"
+        multiline
+        maxRows={4}
         variant="standard"
-        onChange={handleChange} 
-
+        onChange={handleChange}
       />
-      <Button variant="contained" disabled={!dataOk} onClick={() => handleSubmit()} >Submit</Button>
-  </Box>
+      <Button
+        sx={{
+          background: "#2b2b2b",
+          ":hover": {
+            background: "#66bb6a",
+          },
+        }}
+        variant="contained"
+        disabled={!dataOk}
+        onClick={() => handleSubmit()}
+      >
+        Submit
+      </Button>
+    </Box>
   );
 }

@@ -1,6 +1,7 @@
 import { InputForm } from "./components/input-form";
 import "./App.css";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+
 import { Upload } from "./components/upload";
 import { DrawerAppBar } from "./components/app-bar";
 import { CustomizedBreadcrumbs } from './components/breadcrumbs';
@@ -27,9 +28,9 @@ function App() {
       <DrawerAppBar />
       <CustomizedBreadcrumbs curPath={ window.location.pathname} />
       <Routes> 
-        <Route path="/form" element={<InputForm goNext={(propertyTitle: string) => {
+        <Route path="/" element={<InputForm goNext={(propertyTitle: string) => {
           setTitle(propertyTitle);
-          navigate("/upload")
+          navigate("/upload?propertyTitle="+propertyTitle)
         }
         }/>} />
         <Route path="/upload" element={<Upload propertyTitle={title} goNext={() => { navigate('/evaluate') }} />} />

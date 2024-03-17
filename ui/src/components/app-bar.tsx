@@ -1,3 +1,4 @@
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -33,6 +34,7 @@ export const  DrawerAppBar = (props: Props) => {
     setMobileOpen((prevState) => !prevState);
   };
 
+const navigate = useNavigate();
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
@@ -76,7 +78,7 @@ export const  DrawerAppBar = (props: Props) => {
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block'} }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
+              <Button key={item} sx={{ color: '#fff' }} onClick={() => navigate('/')}>
                 {item}
               </Button>
             ))}

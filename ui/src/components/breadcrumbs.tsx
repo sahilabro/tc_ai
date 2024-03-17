@@ -8,6 +8,8 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { SvgIconTypeMap } from "@mui/material";
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   const backgroundColor =
@@ -35,7 +37,7 @@ interface BreadCrumbContainerProps {
 interface BreadCrumbProps {
     label: string;
     active: boolean;
-    icon: React.ReactElement;
+    icon: OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string; };
 }
 
 const BreadCrumbWithActiveState = (props: BreadCrumbProps) => {
@@ -43,7 +45,7 @@ const BreadCrumbWithActiveState = (props: BreadCrumbProps) => {
       className={props.active ? 'active' : ''}
       sx={{padding: "8px"}}
       label={<h3>{props.label}</h3>}
-    icon={props.icon}
+    icon={<props.icon style={{fill: props.active ? '#f9f7f6':''}} />}
   />
 
 }
@@ -55,10 +57,10 @@ export const CustomizedBreadcrumbs = (props: BreadCrumbContainerProps) => {
         <BreadCrumbWithActiveState
                   active={props.curPath === "/form"}
                   label="Describe"
-          icon={<ModeEditOutlineIcon fontSize="medium" />}
+          icon={ModeEditOutlineIcon}
         />
-              <BreadCrumbWithActiveState active={props.curPath === "/upload"} label="Upload" icon={<DriveFolderUploadIcon fontSize="medium" />} />
-              <BreadCrumbWithActiveState active={props.curPath === "/evaluate"}  label="Evaluate" icon={<TroubleshootIcon fontSize="medium" />} />
+        <BreadCrumbWithActiveState active={props.curPath === "/upload"} label="Upload" icon={DriveFolderUploadIcon} />
+        <BreadCrumbWithActiveState active={props.curPath === "/evaluate"} label="Evaluate" icon={TroubleshootIcon}  />
       </Breadcrumbs>
     </div>
   );

@@ -5,7 +5,10 @@ import React, {useCallback} from 'react'
 import { useDropzone } from 'react-dropzone'
 import { getUploadEndpoint } from "../api/endpoint";
 import CircularWithValueLabel from "./spinner";
+import { useSearchParams } from "react-router-dom";
+
 async function uploadFiles(propertyTitle: string, files: FileList) {
+
   if (!propertyTitle) {
     propertyTitle = "123"
   }
@@ -35,8 +38,9 @@ async function uploadFiles(propertyTitle: string, files: FileList) {
 }
 
 interface DropzoneProps {
-  propertyTitle: string;
+  // propertyTitle: string;
   goNext: Function;
+  propertyTitle: string;
 }
 
 function Dropzone(props: DropzoneProps) {
@@ -85,11 +89,15 @@ interface UploadProps {
 
 
 export const Upload = (props: UploadProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const propTitle = searchParams.get('propertyTitle');
+  console.log('upload prop title', propTitle);
+
   console.log(props.propertyTitle)
 
   return (
     <div >
-      <Dropzone propertyTitle={props.propertyTitle} goNext={props.goNext}/>
+      <Dropzone goNext={props.goNext} propertyTitle={propTitle||props.propertyTitle} />
     </div>
   );
 };
