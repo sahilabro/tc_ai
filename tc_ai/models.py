@@ -1,9 +1,11 @@
 from django.db import models
+from django.db.models import JSONField
 
 class Property(models.Model):
     title = models.CharField(max_length=255)
     address = models.TextField()
     description = models.TextField(blank=True, null=True)
+    extracted_dates = JSONField(null=True, blank=True)
     # Add more fields as necessary
 
     def __str__(self):
