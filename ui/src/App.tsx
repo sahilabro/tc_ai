@@ -1,15 +1,43 @@
-import { InputForm } from './components/input-form'; 
-import logo from './logo.svg';
-import './App.css';
-
+import { InputForm } from "./components/input-form";
+import "./App.css";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { Upload } from "./components/upload";
+import { DrawerAppBar } from "./components/app-bar";
+import { CustomizedBreadcrumbs } from './components/breadcrumbs';
+import { useState } from "react";
+import { Evaluation } from "./components/evaluate";
 function App() {
+  const [section, setSection] = useState('form');
+  const navigate = useNavigate();
+  const [title, setTitle] = useState('');
+
+  // Map to next thing.
+  const handleNavigate = (nextPath: string) => {
+   navigate(nextPath); // update to history changes route + breadcrumb.
+  };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-      <InputForm />
-      </header>
-    </div>
+    <div style={{
+      alignItems: "center",
+      justifyContent: "center",
+      display: "flex",
+      flexDirection: "column"
+    }}>
+      <DrawerAppBar />
+      <CustomizedBreadcrumbs curPath={ window.location.pathname} />
+      <Routes> 
+        <Route path="/form" element={<InputForm goNext={(propertyTitle: string) => {
+          setTitle(propertyTitle);
+          navigate("/upload")
+        }
+        }/>} />
+        <Route path="/upload" element={<Upload propertyTitle={title} goNext={() => { navigate('/evaluate') }} />} />
+        <Route path="/evaluate" element={<Evaluation />} />
+
+
+      </Routes>
+      </div>
   );
 }
 
